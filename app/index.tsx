@@ -1,9 +1,9 @@
 import { useFonts } from 'expo-font';
-import { router, Link, SplashScreen, Stack, useNavigation } from 'expo-router';
+import { Link, Redirect, SplashScreen, Stack, useNavigation, useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { TouchableOpacity, Text, View, StyleSheet, Button, FlatList, Modal, Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
 import LoginModal from '@/components/LoginModal'
+import HomeScreen from '@/components/HomeScreen';
 
 import auth, { FirebaseAuthTypes } from '@react-native-firebase/auth';
 function LogoTitle(props: any) {
@@ -32,34 +32,16 @@ export default function Home() {
           headerStyle: { backgroundColor: '#fff' },
           headerTintColor: '#fff',
           headerTitleAlign: 'center',
+          headerShown: true,
           headerTitle: props => <LogoTitle {...props} />,
         }}
       />
       {user ?
-        <View style={styles.listWrapper}>
-          <FlatList ItemSeparatorComponent={() => <View style={{ height: 1 }} />}
-            data={
-              [
-                { key: 'CS1' },
-                { key: 'CS2' },
-              ]
-            }
-            renderItem={({ item }) =>
-              <View style={styles.item_container}>
-                <Text style={[styles.font, styles.item, { paddingLeft: 5 }]}>{item.key}</Text>
-                <Ionicons name="chevron-forward-sharp" style={[styles.item, { paddingRight: 5 }]} />
-              </View>
-            } />
-          <View style={{ paddingBottom: 10 }}>
-            <Button title="Close Modal" onPress={
-              () => auth().signOut().then(() => console.log(auth().currentUser))
-            } />
-          </View>
-        </View>
+        <HomeScreen />
         :
         <LoginModal />
       }
-    </View >
+    </View>
   );
 }
 

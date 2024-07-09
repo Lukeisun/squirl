@@ -1,7 +1,8 @@
-import { TouchableOpacity, Text, View, StyleSheet, ViewStyle, Modal, Dimensions, TextInput, Animated } from 'react-native';
+import { TouchableOpacity, Text, View, StyleSheet, ViewStyle, Modal, Dimensions, TextInput, Animated, Button } from 'react-native';
 import auth from '@react-native-firebase/auth';
 import { useState, useEffect, useRef, PropsWithChildren } from 'react';
 import { FadeIn } from 'react-native-reanimated';
+import { Stack, useRouter } from 'expo-router';
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 type FadeInViewProps = PropsWithChildren<{ style: ViewStyle }>;
 const FadeInView: React.FC<FadeInViewProps> = props => {
@@ -29,12 +30,9 @@ export default function LoginModal() {
   const [errorMsg, setErrorMsg] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("")
-
   const handleSignIn = async () => {
     try {
-      const res = await auth().signInWithEmailAndPassword(email, password);
-      res.user.updateProfile({ displayName: "pog" });
-      console.log(res.user);
+      await auth().signInWithEmailAndPassword(email, password);
     } catch (err: any) {
       const codes = [
         "auth/email-already-in-use",
@@ -46,31 +44,33 @@ export default function LoginModal() {
       }
     }
   }
-  return (<Modal animationType="slide" transparent={true} visible={true}>
-    <View style={styles.modal}>
-      <View style={styles.inputs}>
-        <TextInput
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-        />
-        <TextInput
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-        />
-        <TouchableOpacity style={styles.touchable} onPress={handleSignIn}>
-          <Text>Sign In</Text>
-        </TouchableOpacity>
-        {errorMsg &&
-          <FadeInView style={{}}>
-            <Text style={{ alignSelf: "center", fontWeight: "bold", }}>{errorMsg}</Text>
-          </FadeInView>
-        }
+  return (
+    <Modal animationType='slide' visible={true} transparent={true}>
+      <View style={styles.modal}>
+        <View style={styles.inputs}>
+          <TextInput
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+          />
+          <TextInput
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+          />
+          <TouchableOpacity style={styles.touchable} onPress={handleSignIn}>
+            <Text>Sign In</Text>
+          </TouchableOpacity>
+          {errorMsg &&
+            <FadeInView style={{}}>
+              <Text style={{ alignSelf: "center", fontWeight: "bold", }}>{errorMsg}</Text>
+            </FadeInView>
+          }
+        </View>
       </View>
-    </View>
-  </Modal >);
+    </Modal>
+  );
 }
 const styles = StyleSheet.create({
   font: { fontFamily: 'SpaceMono' },
